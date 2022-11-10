@@ -11,7 +11,7 @@ module.exports = {
     connectToDb : (callback) => {
         MongoClient.connect('mongodb://localhost:27017/bookstore')
             .then((client) => {
-                dbConnection = connect.db()
+                dbConnection = client.db()
                 return callback()
             })
             .catch(err => {

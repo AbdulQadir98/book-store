@@ -15,9 +15,20 @@ connectToDb((err) => {
     }
 })
 
-
-
 // routes
 app.get('/books', (req, res) => {
-    res.json({msg: 'welcome'})
+
+    let books = []
+    db.collection('books')
+        .find() // returns a cursor object of methods forEach, toArray
+        .sort({ author: 1 }) // sorts by author field
+        .forEach(book => books.push(book)) // this is an async
+        .then(() => {
+            res.status(200).json(books)
+        })
+        .catch(() => {
+            res.status(500).json({
+                error: "Cound't fetch documents"
+            })
+        })
 })
