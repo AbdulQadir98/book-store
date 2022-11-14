@@ -18,13 +18,25 @@ connectToDb((err) => {
     }
 })
 
-// routes
+// **** routes ****
+
+// pagination ( using req.query )
+// localhost:3000/books?page=2
+// by default will fetch the first 10 books
 app.get('/books', (req, res) => {
+
+    // if req query parameter doesnt have a value then default value is 1 else the given value
+    const pageNo = req.query.page || 1
+
+    // let # of books per page 10
+    const booksPerPage = 10
 
     let books = []
     db.collection('books')
         .find() // returns a cursor object of methods forEach, toArray
         .sort({ author: 1 }) // sorts by author field
+        .skip((pageNo - 1) * booksPerPage) // to skip book list 
+        .limit(booksPerPage) // to limit the count per page
         .forEach(book => books.push(book)) // this is an async
         .then(() => {
             res.status(200).json(books)
